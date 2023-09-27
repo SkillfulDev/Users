@@ -1,6 +1,7 @@
 package ua.chernonog.users.service;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,13 @@ import ua.chernonog.users.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
 @Service
 @Transactional
+@NoArgsConstructor
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -78,5 +81,9 @@ public class UserService {
         return foundedUsers.stream().map(userEntity ->
                 userMapper.userEntityToUserResponse(userEntity)).toList();
 
+    }
+
+    public List<UserResponse> findAllUsers() {
+      return userRepository.findAll().stream().map(userMapper::userEntityToUserResponse).collect(Collectors.toList());
     }
 }

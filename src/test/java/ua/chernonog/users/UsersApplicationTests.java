@@ -1,86 +1,98 @@
 package ua.chernonog.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ua.chernonog.users.controller.UserController;
 import ua.chernonog.users.entity.UserEntity;
-import ua.chernonog.users.mapper.UserCustomMapper;
-import ua.chernonog.users.mapper.UserMapper;
-import ua.chernonog.users.model.request.UserRequest;
 import ua.chernonog.users.model.response.UserResponse;
 import ua.chernonog.users.repository.UserRepository;
-import ua.chernonog.users.service.UserService;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
-class UsersApplicationTests {
+public class UsersApplicationTests {
+
+    private MockMvc mockMvc;
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectWriter objectWriter = objectMapper.writer();
 
     @Mock
     private UserRepository userRepository;
-    private UserMapper userMapper;
-    private UserCustomMapper userCustomMapper;
 
-    private UserService userService;
+    @InjectMocks
+    private UserController userController;
 
-    private static UserEntity testUserUserEntity;
+    UserResponse userResponse;
 
-    private UserRequest userRequest;
-    private UserResponse userResponse;
+    UserEntity userResponse1 = UserEntity.builder()
+            .id(1l)
+            .email("chernonog.evgeniy@gmail.com")
+            .firstName("Tom")
+            .lastName("Chernonog")
+            .birthdate(LocalDate.of(1986,05,13))
+            .address("Kiev")
+            .phoneNumber("546546546")
+            .build();
+    UserEntity userResponse2 = UserEntity.builder()
+            .id(1l)
+            .email("chernonog.evgeniy@gmail.com")
+            .firstName("Evgeniy")
+            .lastName("Chernonog")
+            .birthdate(LocalDate.of(1986,05,13))
+            .address("Kiev")
+            .phoneNumber("546546546")
+            .build();
+    UserEntity userResponse3 = UserEntity.builder()
+            .id(1l)
+            .email("chernonog.evgeniy@gmail.com")
+            .firstName("Andrew")
+            .lastName("Chernonog")
+            .birthdate(LocalDate.of(1986,05,13))
+            .address("Kiev")
+            .phoneNumber("546546546")
+            .build();
 
-    @BeforeClass
-    public static void prepareTestData() {
-        testUserUserEntity =UserEntity
-                .builder()
-                .id(123L)
-                .firstName("Evgeniy")
-                .lastName("Chernonog")
-                .email("chernonog.evheniy@gmail.com")
-                .address("some")
-                .phoneNumber("dsada")
-                .build();
-    }
 
     @Before
-    public void init() {
-        userService = new UserService(userRepository,userMapper,userCustomMapper);
+    public void setup(){
+        MockitoAnnotations.initMocks(this);
+        this.mockMvc= MockMvcBuilders.standaloneSetup(userController).build();
+
     }
     @Test
-    public void updateTest() {
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(testUserUserEntity));
-        when(userRepository.save(any(UserEntity.class))).then(returnsFirstArg());
-        UserEntity UserEntityForUpdate = UserEntity
-                .builder()
-                .id(123L)
-                .firstName("Evgeniy")
-                .lastName("Chernonog")
-                .email("chernonog.evheniy@gmail.com")
-                .address("some")
-                .phoneNumber("dsada")
-                .build();
-
-       UserResponse userResponse1 = userService.saveUser(userRequest);
-
-        assertNotNull(userResponse1);
-        assertSame(userResponse1.getId(),testUserUserEntity.getId());
-//        assertThat(userResponse1.get).isEqualTo(robotForUpdate.getName());
-        assertTrue(userResponse1.getFirstName().equals(UserEntityForUpdate.getFirstName()));
+    public void getAllUser()throws Exception{
+        List<UserEntity> users = new ArrayList<>(List.of(userResponse1,userResponse2,userResponse3));
+          Mockito.when(userRepository.findAll()).thenReturn(users);
+          mockMvc.perform(MockMvcRequestBuilders
+                  .get("/allUsers")
+                  .contentType(MediaType.APPLICATION_JSON))
+                  .andExpect(status().isOk())
+                  .andExpect(MockMvcResultMatchers.jsonPath("$",hasSize(3)))
+                  .andExpect(jsonPath("$[2].firstname",is("Evgeniy")));
 
     }
 }
