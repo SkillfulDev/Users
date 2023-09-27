@@ -28,8 +28,6 @@ public class UserService {
     UserCustomMapper userCustomMapper;
 
     public UserResponse saveUser(UserRequest userRequest) {
-        log.info("email={}", userRequest.getFirstName());
-
         if (!IsNotLessThan18Age(userRequest)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else {

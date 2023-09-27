@@ -1,9 +1,6 @@
 package ua.chernonog.users.model.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,6 +8,7 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserResponse {
     long id;
     String email;
