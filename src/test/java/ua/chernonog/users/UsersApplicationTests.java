@@ -2,18 +2,15 @@ package ua.chernonog.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.OngoingStubbing;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -32,7 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UsersApplicationTests {
 
     private MockMvc mockMvc;
@@ -77,11 +75,19 @@ public class UsersApplicationTests {
             .build();
 
 
-    @Before
-    public void setup(){
-        MockitoAnnotations.initMocks(this);
-        this.mockMvc= MockMvcBuilders.standaloneSetup(userController).build();
-
+//    @Before
+//    public void setup(){
+////        MockitoAnnotations.initMocks(this);
+//       mockMvc= MockMvcBuilders.standaloneSetup(userController).build();
+//
+//    }
+//@Before
+//public void init() {
+//    this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+//}
+    @BeforeEach
+    public void init() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
     @Test
     public void getAllUser()throws Exception{
