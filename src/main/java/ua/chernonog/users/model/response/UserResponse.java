@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
+
 public class UserResponse {
     long id;
     String email;

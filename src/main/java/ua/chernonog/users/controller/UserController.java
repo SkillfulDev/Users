@@ -3,6 +3,7 @@ package ua.chernonog.users.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ua.chernonog.users.mapper.UserCustomMapper;
 import ua.chernonog.users.mapper.UserMapper;
 import ua.chernonog.users.model.request.BirthdateRangeRequest;
 import ua.chernonog.users.model.request.UserRequest;
@@ -19,26 +20,27 @@ import java.util.stream.Collectors;
 @RestController
 
 public class UserController {
-    private final UserMapper userMapper;
+    //    private final UserMapper userMapper;
+
     UserService userService;
-UserRepository userRepository;
+    UserRepository userRepository;
 
     @PostMapping("/users/register")
-    public UserResponse registerUser(@RequestBody UserRequest userRequest){
+    public UserResponse registerUser(@RequestBody UserRequest userRequest) {
         return userService.saveUser(userRequest);
-//        return userServiceTest.saveUser(userRequest);
     }
 
     @PutMapping("/users/update/{id}")
-    public UserResponse registerUser(@RequestBody UserRequest userRequest ,
+    public UserResponse registerUser(@RequestBody UserRequest userRequest,
                                      @PathVariable("id") long id) {
-     return userService.updateUser(id,userRequest);
+        return userService.updateUser(id, userRequest);
     }
 
     @DeleteMapping("/users/delete/{id}")
     public String registerUser(@RequestBody @PathVariable("id") long id) {
         return userService.deleteUser(id);
     }
+
     @GetMapping("/users")
     public List<UserResponse> registerUser(@RequestBody BirthdateRangeRequest birthdateRangeRequest) {
         return userService.findAllValidUser(birthdateRangeRequest);
@@ -46,6 +48,6 @@ UserRepository userRepository;
 
     @GetMapping("/allUsers")
     public List<UserResponse> registerUser() {
-        return userRepository.findAll().stream().map(userMapper::userEntityToUserResponse).collect(Collectors.toList());
+        return userService.findAllUsers();
     }
 }

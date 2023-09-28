@@ -24,27 +24,28 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 @Transactional
-@NoArgsConstructor
+
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     UserCustomMapper userCustomMapper;
 
-    public UserResponse saveUser(UserRequest userRequest) {
-        if (!IsNotLessThan18Age(userRequest)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else {
-            UserEntity userEntity = userRepository.save(UserEntity.builder()
-                    .email(userRequest.getEmail())
-                    .firstName(userRequest.getFirstName())
-                    .lastName(userRequest.getLastName())
-                    .address(userRequest.getAddress())
-                    .phoneNumber(userRequest.getPhoneNumber())
-                    .birthdate(userRequest.getBirthdate())
-                    .build());
-            userMapper.userEntityToUserResponse(userEntity);
-            return userMapper.userEntityToUserResponse(userEntity);
-        }
+//
+public UserResponse saveUser(UserRequest userRequest) {
+    if (!IsNotLessThan18Age(userRequest)) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } else {
+        UserEntity userEntity = userRepository.save(UserEntity.builder()
+                .email(userRequest.getEmail())
+                .firstName(userRequest.getFirstName())
+                .lastName(userRequest.getLastName())
+                .address(userRequest.getAddress())
+                .phoneNumber(userRequest.getPhoneNumber())
+                .birthdate(userRequest.getBirthdate())
+                .build());
+        userMapper.userEntityToUserResponse(userEntity);
+        return userMapper.userEntityToUserResponse(userEntity);
+    }
     }
 
     private boolean IsNotLessThan18Age(UserRequest userRequest) {

@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ua.chernonog.users.entity.UserEntity;
 import ua.chernonog.users.model.request.UserRequest;
+import ua.chernonog.users.model.response.UserResponse;
+
 @AllArgsConstructor
 @Component
 public class UserCustomMapper {
-    UserMapper userMapper;
+
+
 
     public UserEntity updateUserFields(UserEntity existingUser, UserRequest userRequest) {
         // Оновлюємо поля користувача, якщо вони не є null у UserRequest
@@ -39,6 +42,15 @@ public class UserCustomMapper {
                 .birthdate(userRequest.getBirthdate())
                 .address(userRequest.getAddress())
                 .phoneNumber(userRequest.getPhoneNumber())
+                .build();
+    }
+   public UserResponse userEntityToUserResponse(UserEntity userEntity){
+        return UserResponse.builder().id(userEntity.getId())
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
+                .birthdate(userEntity.getBirthdate())
+                .address(userEntity.getAddress())
+                .phoneNumber(userEntity.getPhoneNumber())
                 .build();
     }
 }
