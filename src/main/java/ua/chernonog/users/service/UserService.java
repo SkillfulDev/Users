@@ -68,8 +68,7 @@ public class UserService {
     }
 
     public String deleteUser(long id) {
-        userRepository.delete(userRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+        userRepository.deleteById(id);
 
 
         return "User deleted successful";
