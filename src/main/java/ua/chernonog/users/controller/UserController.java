@@ -41,7 +41,7 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
-    @GetMapping("/users")
+    @PostMapping("/users")
     public List<UserResponse> registerUser(@RequestBody BirthdateRangeRequest birthdateRangeRequest) {
         return userService.findAllValidUser(birthdateRangeRequest);
     }

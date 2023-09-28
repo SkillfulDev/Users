@@ -1,12 +1,9 @@
 package ua.chernonog.users.model.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
-
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter

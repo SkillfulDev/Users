@@ -9,8 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,6 +22,7 @@ import ua.chernonog.users.controller.UserController;
 import ua.chernonog.users.entity.UserEntity;
 import ua.chernonog.users.mapper.UserCustomMapper;
 import ua.chernonog.users.mapper.UserMapper;
+import ua.chernonog.users.model.request.BirthdateRangeRequest;
 import ua.chernonog.users.model.request.UserRequest;
 import ua.chernonog.users.model.response.UserResponse;
 import ua.chernonog.users.repository.UserRepository;
@@ -45,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@ContextConfiguration(classes = UserCustomMapper.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRestApiTests {
-//    @MockBean
+    //    @MockBean
 //    private UserService userService;
 //    @MockBean
 //    private UserController userController;
@@ -63,11 +66,29 @@ public class UserRestApiTests {
 
     @Test
     void should_return_employee_list() {
-        UserResponse[] employees = restTemplate.getForObject("http://localhost:" + randomServerPort + "/allUsers", UserResponse[].class);
+        BirthdateRangeRequest birthdateRangeRequest = new BirthdateRangeRequest();
+        birthdateRangeRequest.setFrom(LocalDate.of(1990, 1, 1));
+        birthdateRangeRequest.setTo(LocalDate.of(2000, 12, 31));
+        // Отправляем POST-запрос с объектом BirthdateRangeRequest
+        ResponseEntity<UserResponse[]> responseEntity = restTemplate.postForEntity(
+                "http://localhost:" + randomServerPort + "/users",
+                birthdateRangeRequest,
+                UserResponse[].class
+        );
 
-        assertEquals(4, employees.length);
-        assertEquals("Evgeniy", employees[0].getFirstName());
+        // Проверяем, что получили успешный статус ответа
+        assertEquals(200, responseEntity.getStatusCodeValue());
+
+        // Получаем тело ответа
+        UserResponse[] users = responseEntity.getBody();
+
+        // Проверяем, что длина массива пользователей равна ожидаемой (в данном случае 4)
+        assertEquals(4, users.length);
+
+        // Проверяем, что имя первого пользователя соответствует ожидаемому имени ("Evgeniy")
+        assertEquals("Evgeniy", users[0].getFirstName());
     }
+
     @Test
     void should_add_new_user() throws Exception {
         UserRequest newUserRequest = new UserRequest();
