@@ -3,6 +3,7 @@ package ua.chernonog.users.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ua.chernonog.users.exception.EmailFormatException;
 import ua.chernonog.users.model.request.BirthdateRangeRequest;
 import ua.chernonog.users.model.request.UserRequest;
 import ua.chernonog.users.model.response.UserResponse;
@@ -15,37 +16,39 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @RestController
-
+@RequestMapping("/users")
 public class UserController {
     UserService userService;
     UserRepository userRepository;
 
-    @PostMapping("/users/register")
+    @PostMapping("/register")
+
     public UserResponse registerUser(@RequestBody UserRequest userRequest) {
+        if (!userRequest.getEmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
+            throw new EmailFormatException();
+        }
         return userService.saveUser(userRequest);
     }
 
-    @PutMapping("/users/update/{id}")
+    @PutMapping("/update/{id}")
     public UserResponse registerUser(@RequestBody UserRequest userRequest,
                                      @PathVariable("id") long id) {
-        return userService.updateUser(id, userRequest);
+             return userService.updateUser(id, userRequest);
     }
 
-    @DeleteMapping("/users/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String registerUser(@RequestBody @PathVariable("id") long id) {
         return userService.deleteUser(id);
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     public List<UserResponse> registerUser(@RequestBody BirthdateRangeRequest birthdateRangeRequest) {
         return userService.findAllValidUser(birthdateRangeRequest);
     }
 
-    @GetMapping("/users/allUsers")
+    @GetMapping("/allUsers")
     public List<UserResponse> registerUser() {
         return userService.findAllUsers();
     }
-
-
 }
 

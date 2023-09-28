@@ -1,11 +1,13 @@
 package ua.chernonog.users.model.request;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
-@Getter@Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @Builder
 @ToString

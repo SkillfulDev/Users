@@ -13,7 +13,9 @@ import java.time.LocalDate;
 
 public class UserResponse {
     long id;
+
     String email;
+
     String firstName;
 
     String lastName;
