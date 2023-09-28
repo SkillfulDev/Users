@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import ua.chernonog.users.config.UsersProps;
 import ua.chernonog.users.entity.UserEntity;
+import ua.chernonog.users.exception.UnderAgeException;
+import ua.chernonog.users.exception.UserNotFoundException;
 import ua.chernonog.users.mapper.UserCustomMapper;
 import ua.chernonog.users.mapper.UserMapper;
 import ua.chernonog.users.model.request.BirthdateRangeRequest;
@@ -29,11 +32,12 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     UserCustomMapper userCustomMapper;
+    UsersProps usersProps;
 
 //
 public UserResponse saveUser(UserRequest userRequest) {
     if (!IsNotLessThan18Age(userRequest)) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        throw new UnderAgeException();
     } else {
         UserEntity userEntity = userRepository.save(UserEntity.builder()
                 .email(userRequest.getEmail())
@@ -55,13 +59,13 @@ public UserResponse saveUser(UserRequest userRequest) {
         // Визначаємо різницю між поточною датою та датою народження
         Period age = Period.between(birthdate, currentDate);
 
-        return age.getYears() >= 18;
+        return age.getYears() >= usersProps.legalAge();
     }
 
     public UserResponse updateUser(long id, UserRequest userRequest) {
 
         UserEntity foundedUser = userRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                UserNotFoundException::new);
 
         UserEntity updatedUser = userRepository.save(userCustomMapper.updateUserFields(foundedUser, userRequest));
         return userMapper.userEntityToUserResponse(updatedUser);
@@ -73,7 +77,7 @@ public UserResponse saveUser(UserRequest userRequest) {
         userRepository.deleteById(id);
         return "User deleted successfully";
     }else {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        throw new UserNotFoundException();
     }
 
     }

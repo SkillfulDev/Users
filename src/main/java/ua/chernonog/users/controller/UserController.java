@@ -3,8 +3,6 @@ package ua.chernonog.users.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ua.chernonog.users.mapper.UserCustomMapper;
-import ua.chernonog.users.mapper.UserMapper;
 import ua.chernonog.users.model.request.BirthdateRangeRequest;
 import ua.chernonog.users.model.request.UserRequest;
 import ua.chernonog.users.model.response.UserResponse;
@@ -13,15 +11,12 @@ import ua.chernonog.users.service.UserService;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
 @RestController
 
 public class UserController {
-    //    private final UserMapper userMapper;
-
     UserService userService;
     UserRepository userRepository;
 
@@ -46,8 +41,11 @@ public class UserController {
         return userService.findAllValidUser(birthdateRangeRequest);
     }
 
-    @GetMapping("/allUsers")
+    @GetMapping("/users/allUsers")
     public List<UserResponse> registerUser() {
         return userService.findAllUsers();
     }
+
+
 }
+
