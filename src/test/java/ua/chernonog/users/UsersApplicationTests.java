@@ -88,21 +88,6 @@ public class UsersApplicationTests {
                 .build();
     }
 
-    //    @Before
-//    public void setup(){
-////        MockitoAnnotations.initMocks(this);
-//       mockMvc= MockMvcBuilders.standaloneSetup(userController).build();
-//
-//    }
-//@Before
-//public void init() {
-//    this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-//}
-//    @BeforeEach
-//    public void init() {
-//        this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-//    }
-
     @Test
     public void getAllUser() throws Exception {
         List<UserEntity> users = new ArrayList<>(List.of(UserEntity.builder()

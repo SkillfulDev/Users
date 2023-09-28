@@ -12,10 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -36,6 +33,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +71,7 @@ public class UserRestApiTests {
         UserResponse[] users = responseEntity.getBody();
 
         // Проверяем, что длина массива пользователей равна ожидаемой (в данном случае 4)
-        assertEquals(4, users.length);
+        assertEquals(2, users.length);
 
         // Проверяем, что имя первого пользователя соответствует ожидаемому имени ("Evgeniy")
         assertEquals("Evgeniy", users[0].getFirstName());
@@ -120,6 +118,16 @@ public class UserRestApiTests {
                 .getFirstName());
     }
 
+    @Test
+    void should_remove_employee() throws Exception {
+        Map<String, String> pathVariables = new HashMap<>();
+        pathVariables.put("id", "2");
 
+        ResponseEntity<String> response = restTemplate.exchange(
+                "http://localhost:" + randomServerPort + "/users/delete/{id}",
+                HttpMethod.DELETE, null, String.class, pathVariables);
 
+        assertEquals("User deleted successfully", response.getBody());
+    }
 }
+

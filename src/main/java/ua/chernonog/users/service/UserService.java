@@ -69,10 +69,13 @@ public UserResponse saveUser(UserRequest userRequest) {
     }
 
     public String deleteUser(long id) {
+    if (userRepository.findById(id).isPresent()){
         userRepository.deleteById(id);
+        return "User deleted successfully";
+    }else {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 
-
-        return "User deleted successful";
     }
 
     @Transactional(readOnly = true)
