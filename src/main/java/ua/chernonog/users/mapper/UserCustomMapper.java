@@ -32,5 +32,13 @@ public class UserCustomMapper {
 
         return existingUser;
     }
-
+   public UserEntity userRequestToUserEntity(UserRequest userRequest){
+       return UserEntity.builder().id(userRequest.getId())
+                .firstName(userRequest.getFirstName())
+                .lastName(userRequest.getLastName())
+                .birthdate(userRequest.getBirthdate())
+                .address(userRequest.getAddress())
+                .phoneNumber(userRequest.getPhoneNumber())
+                .build();
+    }
 }
