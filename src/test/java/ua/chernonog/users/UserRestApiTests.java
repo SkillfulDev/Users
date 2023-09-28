@@ -12,6 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,9 @@ import ua.chernonog.users.repository.UserRepository;
 import ua.chernonog.users.service.UserService;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,21 +47,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
-//@WebMvcTest(UserController.class)
-//@ContextConfiguration(classes = UserCustomMapper.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRestApiTests {
-    //    @MockBean
-//    private UserService userService;
-//    @MockBean
-//    private UserController userController;
-//
-//
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @Autowired
-//    private ObjectMapper objectMapper;
     @Autowired
     private TestRestTemplate restTemplate;
     @LocalServerPort
@@ -108,5 +98,28 @@ public class UserRestApiTests {
         assertEquals("LAST_NAME", response.getBody()
                 .getLastName());
     }
+
+    @Test
+    void should_update_existing_employee() throws Exception {
+        UserRequest updatedUserRequest = new UserRequest();
+        updatedUserRequest.setId(1L);
+        updatedUserRequest.setFirstName("newUser");
+//        updatedUserRequest.setLastName("LAST_NAME");
+//        updatedUserRequest.setBirthdate(LocalDate.of(1986, 06, 13));
+//        updatedUserRequest.setAddress("Kiev");
+//        updatedUserRequest.setPhoneNumber("+38045645");
+//        updatedUserRequest.setEmail("dasffa@gmail.com");
+        // Используем метод PathVariable() для передачи значения переменной {id} в URL-адрес
+        Map<String, String> pathVariables = new HashMap<>();
+        pathVariables.put("id", "2");
+        HttpEntity requestUpdate = new HttpEntity<>(updatedUserRequest);
+        ResponseEntity<UserResponse> response = restTemplate.exchange("http://localhost:" + randomServerPort
+                + "/users/update/{id}", HttpMethod.PUT, requestUpdate, UserResponse.class, pathVariables);
+
+        assertEquals("newUser", response.getBody()
+                .getFirstName());
+    }
+
+
 
 }
