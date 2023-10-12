@@ -86,4 +86,7 @@ public UserResponse saveUser(UserRequest userRequest) {
     public List<UserResponse> findAllUsers() {
       return userRepository.findAll().stream().map(userMapper::userEntityToUserResponse).collect(Collectors.toList());
     }
+    public String greet() {
+        return "Hello, World";
+    }
 }

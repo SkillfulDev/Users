@@ -50,4 +50,9 @@ public class UserController {
     public List<UserResponse> registerUser() {
         return userService.findAllUsers();
     }
+
+    @RequestMapping("/greeting")
+    public @ResponseBody String greeting() {
+        return userService.greet();
+    }
 }
