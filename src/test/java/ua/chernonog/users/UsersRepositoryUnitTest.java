@@ -22,56 +22,47 @@ public class UsersRepositoryUnitTest {
 
     @Test
     void findAll_should_return_users_list() {
-        // When
-        List<UserEntity> employees = this.userRepository.findAll();
-        // Then
-        assertEquals(4, employees.size());
+        List<UserEntity> users = this.userRepository.findAll();
+        assertEquals(4, users.size());
     }
+
     @Test
-    void deleteById_should_delete_employee() {
-        // When
+    void deleteById_should_delete_usere() {
         this.userRepository.deleteById(2L);
         Optional<UserEntity> deletedUserEntity = this.userRepository.findById(2L);
-        // Then
         assertFalse(deletedUserEntity.isPresent());
     }
+
     @Test
     void save_should_update_existing_user() {
-        // Given
         UserEntity existingUser = new UserEntity();
         existingUser.setId(3L);
-        existingUser.setFirstName("FIRST_NAME");
-        existingUser.setLastName("LAST_NAME");
-        // When
+        existingUser.setFirstName("Samson");
+        existingUser.setLastName("Trento");
         UserEntity updatedUser = this.userRepository.save(existingUser);
-        // Then
         assertNotNull(updatedUser);
-        assertEquals("FIRST_NAME", updatedUser.getFirstName());
-        assertEquals("LAST_NAME", updatedUser.getLastName());
+        assertEquals("Samson", updatedUser.getFirstName());
+        assertEquals("Trento", updatedUser.getLastName());
     }
+
     @Test
-    void save_should_insert_new_employee() {
-        // Given
+    void save_should_insert_new_user() {
         UserEntity newUser = new UserEntity();
-        newUser.setFirstName("FIRST_NAME");
-        newUser.setLastName("LAST_NAME");
-        newUser.setEmail("test@gmail.com");
+        newUser.setFirstName("Kris");
+        newUser.setLastName("Wendy");
+        newUser.setEmail("wendyt@gmail.com");
         newUser.setAddress("Lviv");
-        newUser.setPhoneNumber("+3050545622");
-        // When
+        newUser.setPhoneNumber("+304550545622");
         UserEntity persistedUser = this.userRepository.save(newUser);
-        // Then
         assertNotNull(persistedUser);
         assertEquals(5, persistedUser.getId());
     }
+
     @Test
     void findAll_should_return_validUsers_list() {
-        // When
-        List<UserEntity> employees = this.userRepository
-                .findByBirthdateBetween(LocalDate.of(1986,05,13),
-                LocalDate.of(1987,05,13));
-        // Then
-        assertEquals(2, employees.size());
+        List<UserEntity> users = this.userRepository
+                .findByBirthdateBetween(LocalDate.of(1990, 05, 13),
+                        LocalDate.of(2000, 05, 13));
+        assertEquals(2, users.size());
     }
-
 }
